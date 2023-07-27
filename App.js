@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  FlatList,
+} from 'react-native';
 
 export default function App() {
   const [enteredGoalText, setEnteredGoalText] = useState('');
@@ -9,7 +16,13 @@ export default function App() {
     setEnteredGoalText(enteredText);
   };
   const addGoalHandler = () => {
-    setListOfGoals((prevState) => [...prevState, enteredGoalText]);
+    setListOfGoals((prevState) => [
+      ...prevState,
+      {
+        text: enteredGoalText,
+        id: Math.random().toString(),
+      },
+    ]);
   };
   return (
     <View style={styles.container}>
@@ -22,10 +35,22 @@ export default function App() {
         <Button title="Add Goal" onPress={addGoalHandler} />
       </View>
       <View style={styles.goalsContainer}>
-        <Text>List of Goals</Text>
-        {listOfGoals.map((goal) => (
-          <Text key={goal}>{goal}</Text>
-        ))}
+        <Text style={styles.headline}>List of Goals</Text>
+        <FlatList
+          data={listOfGoals}
+          renderItem={(itemData) => (
+            <View style={styles.goalItem}>
+              <Text style={styles.goalText}>{itemData.item.text}</Text>
+            </View>
+          )}
+          keyExtractor={(item, index) => item.id}
+        />
+
+        {/* {listOfGoals.map((goal) => (
+            <View key={goal} style={styles.goalItem}>
+              <Text style={styles.goalText}>{goal}</Text>
+            </View>
+          ))} */}
       </View>
     </View>
   );
@@ -55,5 +80,23 @@ const styles = StyleSheet.create({
   },
   goalsContainer: {
     flex: 5,
+  },
+  headline: {
+    margin: 10,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  goalItem: {
+    margin: 10,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    backgroundColor: '#EEEEEE',
+    borderRadius: 6,
+  },
+  goalText: {
+    color: '#068FFF',
+    textAlign: 'center',
+    fontWeight: '500',
   },
 });
